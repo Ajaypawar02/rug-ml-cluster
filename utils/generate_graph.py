@@ -1,7 +1,7 @@
 '''
 A script to generate a random dataset of interactions between users in a social network.
 
-The script takes in a number of users and a number of interactions and generates a random dataset of interactions between users as a .CSV file.
+The script takes in a number of users and a number of interactions and generates a random dataset of interactions between users as a .JSON file.
 '''
 
 import random
