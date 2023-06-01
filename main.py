@@ -19,19 +19,23 @@ def get_clusters(path='data/interactions.json'):
         graph.add_edge(user0, user1, asset_type=asset_type, time=time)
 
         if asset_type == 'A' and time > 16000000:
-            token_a_users.add(user0)
+            # C: user0 sending token A is always the same user in this example, we don't want to connect this user
+            # token_a_users.add(user0)
             token_a_users.add(user1)
 
     # Step 3: Extract features
     node_features = {}
     edge_features = {}
 
+    # C: Runtime O(n)
     for node in graph.nodes:
         node_features[node] = {
             'num_interactions': len(graph.edges(node)),
             'has_token_A': int(node in token_a_users)
         }
 
+    # C: Runtime O((N / 10) * N)
+    # C: Better to do this during the initial for loop
     for edge in graph.edges:
         edge_features[edge] = {
             'asset_type': graph.edges[edge]['asset_type'],
@@ -43,6 +47,7 @@ def get_clusters(path='data/interactions.json'):
     X_edge = []
     y = []
 
+    # C: Another loop through nodes and edges
     for node in graph.nodes:
         X_node.append(list(node_features[node].values()))
         y.append(node in token_a_users)
@@ -56,6 +61,7 @@ def get_clusters(path='data/interactions.json'):
 
     X = []
     for i in range(len(X_node)):
+        # C: Why would we want to add the number of interactions to the X matrix?
         X.append(X_node[i] + X_edge_encoded[i].tolist())
 
     X = StandardScaler().fit_transform(X)
